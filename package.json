@@ -20,6 +20,14 @@
     "url": "https://github.com/ealun/stop-reject-think/issues"
   },
   "homepage": "https://github.com/ealun/stop-reject-think#readme",
+  "nyc": {
+    "check-coverage": true,
+    "reporter": [
+      "lcov",
+      "text",
+      "text-summary"
+    ]
+  },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.2.0",
     "cookie-parser": "^1.4.3",
