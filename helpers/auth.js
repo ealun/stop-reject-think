@@ -1,4 +1,3 @@
-// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 const credentials = {
   client: {
     id: process.env.APP_ID,
@@ -12,6 +11,23 @@ const credentials = {
 }
 const oauth2 = require('simple-oauth2').create(credentials)
 const jwt = require('jsonwebtoken')
+
+/**
+ * Return an "auth token", which is the data type we use for API tokens
+ * outside this file. Auth tokens are JSON stringify-able.
+ * @param {Object} accessToken - accessToken from simple-oauth2
+ * @returns {Object} Auth token
+ */
+function makeAuthToken (accessToken) {
+  const user = jwt.decode(accessToken.token.id_token)
+
+  return {
+    user,
+    accessToken: accessToken.token.access_token,
+    refreshToken: accessToken.token.refresh_token,
+    expires: accessToken.token.expires_at.getTime()
+  }
+}
 
 function getAuthUrl () {
   const returnVal = oauth2.authorizationCode.authorizeURL({
@@ -31,7 +47,13 @@ async function getTokenFromCode (authCode) {
 
   const accessToken = oauth2.accessToken.create(result)
   console.log('Token created: ', accessToken.token)
-  return accessToken
+  return makeAuthToken(accessToken)
+}
+
+async function refreshToken (authToken) {
+  const refreshToken = authToken.refreshToken
+  const accessToken = await oauth2.accessToken.create({refresh_token: refreshToken}).refresh()
+  return makeAuthToken(accessToken)
 }
 
 async function getAccessToken (cookies, res) {
@@ -62,18 +84,11 @@ async function getAccessToken (cookies, res) {
   return null
 }
 
-function saveValuesToCookie (token, res) {
-  // Parse the identity token
-  const user = jwt.decode(token.token.id_token)
-
-  // Save the access token in a cookie
-  res.cookie('graph_access_token', token.token.access_token, {maxAge: 3600000, httpOnly: true})
-  // Save the user's name in a cookie
-  res.cookie('graph_user_name', user.name, {maxAge: 3600000, httpOnly: true})
-  // Save the refresh token in a cookie
-  res.cookie('graph_refresh_token', token.token.refresh_token, {maxAge: 7200000, httpOnly: true})
-  // Save the token expiration tiem in a cookie
-  res.cookie('graph_token_expires', token.token.expires_at.getTime(), {maxAge: 3600000, httpOnly: true})
+function saveValuesToCookie (authToken, res) {
+  res.cookie('graph_access_token', authToken.accessToken, {maxAge: 3600000, httpOnly: true})
+  res.cookie('graph_user_name', authToken.user.name, {maxAge: 3600000, httpOnly: true})
+  res.cookie('graph_refresh_token', authToken.refreshToken, {maxAge: 7200000, httpOnly: true})
+  res.cookie('graph_token_expires', authToken.expires, {maxAge: 3600000, httpOnly: true})
 }
 
 function clearCookies (res) {
@@ -89,3 +104,4 @@ exports.getTokenFromCode = getTokenFromCode
 exports.getAccessToken = getAccessToken
 exports.clearCookies = clearCookies
 exports.saveValuesToCookie = saveValuesToCookie
+exports.refreshToken = refreshToken
