@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: stop-reject-think
+  name: stop-reject-think
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: stop-reject-think
+  template:
+    metadata:
+      labels:
+        name: stop-reject-think
+    spec:
+      containers:
+      - image: gcr.io/stop-reject-think/stop-reject-think:latest
+        imagePullPolicy: Always
+        name: stop-reject-think
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: stop-reject-think
+  name: stop-reject-think
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    name: stop-reject-think
