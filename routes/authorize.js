@@ -1,20 +1,17 @@
 var express = require('express')
 var router = express.Router()
 var authHelper = require('../helpers/auth')
-const jwt = require('jsonwebtoken')
 const db = require('../lib/db')
 
 router.get('/', async function (req, res, next) {
   const code = req.query.code
   if (code) {
-    let accessToken
+    let authToken
 
     try {
-      accessToken = await authHelper.getTokenFromCode(code)
-      authHelper.saveValuesToCookie(accessToken, res)
-
-      const user = jwt.decode(accessToken.token.id_token)
-      db.setToken(user.name, accessToken)
+      authToken = await authHelper.getTokenFromCode(code)
+      authHelper.saveValuesToCookie(authToken, res)
+      db.setToken(authToken.user.name, authToken)
     } catch (error) {
       res.render('error', { title: 'Error', message: 'Error exchanging code for token', error: error })
     }
