@@ -2,7 +2,7 @@
 const { expect } = require('chai')
 
 const calendarResponse = require('./mocks/calendar-response.json')
-const { getMeetingsByDate } = require('../blocker')
+const { getMeetingsByDate } = require('../lib/blocker')
 
 describe('blocker', () => {
   describe('.getMeetingsByDate', () => {
