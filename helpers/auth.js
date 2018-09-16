@@ -76,7 +76,6 @@ function saveValuesToCookie(token, res) {
   res.cookie('graph_token_expires', token.token.expires_at.getTime(), {maxAge: 3600000, httpOnly: true});
 }
 
-
 function clearCookies(res) {
   // Clear cookies
   res.clearCookie('graph_access_token', {maxAge: 3600000, httpOnly: true});
