@@ -1,10 +1,10 @@
+require('dotenv').config()
+
 var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 const job = require('./lib/job')
-
-require('dotenv').config()
 
 var index = require('./routes/index')
 var authorize = require('./routes/authorize')
