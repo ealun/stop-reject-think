@@ -33,6 +33,6 @@ Visit <http://localhost:8080>.
 ### Build and push image
 
 ```
-docker build -t gcr.io/stop-reject-think/stop-reject-think:latest
+docker build -t gcr.io/stop-reject-think/stop-reject-think:latest .
 docker push gcr.io/stop-reject-think/stop-reject-think:latest
 ```
