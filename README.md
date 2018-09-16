@@ -26,7 +26,7 @@ npm start
 
 ### Using
 
-Visit <http://localhost:3000>.
+Visit <http://localhost:8080>.
 
 ## Deploying
 
