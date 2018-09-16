@@ -36,3 +36,9 @@ Visit <http://localhost:8080>.
 docker build -t gcr.io/stop-reject-think/stop-reject-think:latest .
 docker push gcr.io/stop-reject-think/stop-reject-think:latest
 ```
+
+### Deploy to Kubernetes
+
+```
+kubectl apply -f kubernetes.yaml
+```
