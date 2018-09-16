@@ -8,7 +8,6 @@ const job = require('./lib/job')
 
 var index = require('./routes/index')
 var authorize = require('./routes/authorize')
-var calendar = require('./routes/calendar')
 
 var app = express()
 
@@ -23,7 +22,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
 app.use('/authorize', authorize)
-app.use('/calendar', calendar)
 
 app.use('/healthcheck', async (req, res, next) => {
   res.json({ status: 'ok' })
