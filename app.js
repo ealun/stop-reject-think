@@ -2,6 +2,7 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
+const job = require('./lib/job')
 
 require('dotenv').config()
 
@@ -43,3 +44,5 @@ app.use(function (err, req, res, next) {
 })
 
 module.exports = app
+
+job.start()
