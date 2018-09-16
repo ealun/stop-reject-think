@@ -9,12 +9,14 @@ describe('blocker', () => {
     it('bins meetings by date', () => {
       const expected = {
         '2017-11-16': [{
-          'start': '2017-11-16T08:00:00.0000000',
-          'end': '2017-11-16T08:30:00.0000000'
+          'startDate': new Date('2017-11-16T08:00:00.000'),
+          'span': 0.5,
+          'endDate': new Date('2017-11-16T08:30:00.000')
         }],
         '2017-11-17': [{
-          'start': '2017-11-17T10:00:00.0000000',
-          'end': '2017-11-17T11:30:00.0000000'
+          'startDate': new Date('2017-11-17T10:00:00.000'),
+          'span': 1.5,
+          'endDate': new Date('2017-11-17T11:30:00.000')
         }]
       }
       expect(getMeetingsByDate(calendarResponse)).to.deep.equal(expected)
