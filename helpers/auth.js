@@ -71,12 +71,10 @@ async function getAccessToken (cookies, res) {
     }
   }
 
-  // Either no token or it's expired, do we have a
-  // refresh token?
   const refreshToken = cookies.graph_refresh_token
   if (refreshToken) {
     const newToken = await oauth2.accessToken.create({refresh_token: refreshToken}).refresh()
-    saveValuesToCookie(newToken, res)
+    saveValuesToCookie(makeAuthToken(newToken), res)
     return newToken.token.access_token
   }
 
