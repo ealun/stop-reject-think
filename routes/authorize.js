@@ -1,19 +1,20 @@
-// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 var express = require('express');
 var router = express.Router();
 var authHelper = require('../helpers/auth');
+const jwt = require('jsonwebtoken');
+const db = require('../lib/db');
 
-/* GET /authorize. */
 router.get('/', async function(req, res, next) {
-  // Get auth code
   const code = req.query.code;
-
-  // If code is present, use it
   if (code) {
     let token;
 
     try {
-      token = await authHelper.getTokenFromCode(code, res);
+      accessToken = await authHelper.getTokenFromCode(code);
+      authHelper.saveValuesToCookie(accessToken, res);
+
+      const user = jwt.decode(accessToken.token.id_token);
+      db.setToken(user.name, accessToken);
     } catch (error) {
       res.render('error', { title: 'Error', message: 'Error exchanging code for token', error: error });
     }

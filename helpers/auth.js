@@ -22,19 +22,16 @@ function getAuthUrl() {
   return returnVal;
 }
 
-async function getTokenFromCode(auth_code, res) {
-  let result = await oauth2.authorizationCode.getToken({
+async function getTokenFromCode(auth_code) {
+  const result = await oauth2.authorizationCode.getToken({
     code: auth_code,
     redirect_uri: process.env.REDIRECT_URI,
     scope: process.env.APP_SCOPES
   });
 
-  const token = oauth2.accessToken.create(result);
-  console.log('Token created: ', token.token);
-
-  saveValuesToCookie(token, res);
-
-  return token.token.access_token;
+  const accessToken = oauth2.accessToken.create(result);
+  console.log('Token created: ', accessToken.token);
+  return accessToken;
 }
 
 async function getAccessToken(cookies, res) {
@@ -79,6 +76,7 @@ function saveValuesToCookie(token, res) {
   res.cookie('graph_token_expires', token.token.expires_at.getTime(), {maxAge: 3600000, httpOnly: true});
 }
 
+
 function clearCookies(res) {
   // Clear cookies
   res.clearCookie('graph_access_token', {maxAge: 3600000, httpOnly: true});
@@ -91,3 +89,4 @@ exports.getAuthUrl = getAuthUrl;
 exports.getTokenFromCode = getTokenFromCode;
 exports.getAccessToken = getAccessToken;
 exports.clearCookies = clearCookies;
+exports.saveValuesToCookie = saveValuesToCookie;
