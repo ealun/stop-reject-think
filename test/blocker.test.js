@@ -1,5 +1,4 @@
 const { expect } = require('chai');
-
 const calendarResponse = require('./mocks/calendar-response.json');
 const { getMeetingsByDate } = require('../blocker');
 
