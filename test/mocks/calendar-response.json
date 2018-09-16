@@ -1,0 +1,28 @@
+{
+  "value": [
+    {
+      "subject": "Little / Shayla 1:1",
+      "body": {},
+      "start": {
+        "dateTime": "2017-11-16T08:00:00.0000000",
+        "timeZone": "UTC"
+      },
+      "end": {
+        "dateTime": "2017-11-16T08:30:00.0000000",
+        "timeZone": "UTC"
+      }
+    },
+    {
+      "subject": "Heiny outdoor time",
+      "body": {},
+      "start": {
+        "dateTime": "2017-11-17T10:00:00.0000000",
+        "timeZone": "UTC"
+      },
+      "end": {
+        "dateTime": "2017-11-17T11:30:00.0000000",
+        "timeZone": "UTC"
+      }
+    }
+  ]
+}
