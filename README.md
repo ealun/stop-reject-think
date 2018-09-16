@@ -27,3 +27,12 @@ npm start
 ### Using
 
 Visit <http://localhost:3000>.
+
+## Deploying
+
+### Build and push image
+
+```
+docker build -t gcr.io/stop-reject-think/stop-reject-think:latest
+docker push gcr.io/stop-reject-think/stop-reject-think:latest
+```
