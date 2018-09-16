@@ -1,23 +1,23 @@
-function getMeetingsByDate(calendarResults) {
-  const eventsByDate = {};
+function getMeetingsByDate (calendarResults) {
+  const eventsByDate = {}
   calendarResults.value.forEach(event => {
-    const startDate = event.start.dateTime;
-    const endDate = event.end.dateTime;
+    const startDate = event.start.dateTime
+    const endDate = event.end.dateTime
     // Assume events don't span multiple days.
-    const date = startDate.split('T')[0];
+    const date = startDate.split('T')[0]
     const meetingBounds = {
       start: startDate,
       end: endDate
     }
     if (eventsByDate[date]) {
-      eventsByDate[date].push(meetingBounds);
+      eventsByDate[date].push(meetingBounds)
     } else {
-      eventsByDate[date] = [meetingBounds];
+      eventsByDate[date] = [meetingBounds]
     }
-  });
-    return eventsByDate;
+  })
+  return eventsByDate
 }
 
 module.exports = {
   getMeetingsByDate
-};
+}
