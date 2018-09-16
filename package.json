@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon ./bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,8 @@
     "simple-oauth2": "^2.2.1"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1",
     "nodemon": "^1.18.4"
   }
 }
