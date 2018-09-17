@@ -16,24 +16,25 @@ const jwksRsa = require('jwks-rsa')
 const jwksClient = jwksRsa({
   cache: true,
   jwksUri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys'
-});
+})
 
 function verifyIdToken (rawIdToken) {
   //
   // https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-id-and-access-tokens#validating-tokens
   //
-  function getKey(header, callback){
-    jwksClient.getSigningKey(header.kid, function(err, key) {
-      var signingKey = key.publicKey || key.rsaPublicKey;
-      callback(null, signingKey);
-    });
+  function getKey (header, cb) {
+    jwksClient.getSigningKey(header.kid, function (err, key) {
+      if (err) return cb(err)
+      const signingKey = key.publicKey || key.rsaPublicKey
+      cb(null, signingKey)
+    })
   }
 
   return new Promise((resolve, reject) => {
-    jwt.verify(rawIdToken, getKey, function(err, decoded) {
+    jwt.verify(rawIdToken, getKey, function (err, decoded) {
       if (err) return reject(err)
       resolve(decoded)
-    });
+    })
   })
 }
 

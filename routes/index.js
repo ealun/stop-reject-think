@@ -2,7 +2,6 @@ const db = require('../lib/db')
 var express = require('express')
 var router = express.Router()
 var authHelper = require('../helpers/auth')
-const jwt = require('jsonwebtoken')
 
 router.get('/', async function (req, res, next) {
   let parms = { title: 'Home', active: { home: true } }
@@ -15,12 +14,11 @@ router.get('/', async function (req, res, next) {
     const authToken = db.getToken(id)
 
     parms.user = id
-    parms.debug = `User: ${ id }\nAuth Token: ${ JSON.stringify(authToken) }`
+    parms.debug = `User: ${id}\nAuth Token: ${JSON.stringify(authToken)}`
   } catch (err) {
     console.log(err)
     parms.signInUrl = authHelper.getAuthUrl()
     parms.debug = parms.signInUrl
-
   }
 
   res.render('index', parms)
