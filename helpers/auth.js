@@ -11,6 +11,31 @@ const credentials = {
 }
 const oauth2 = require('simple-oauth2').create(credentials)
 const jwt = require('jsonwebtoken')
+const jwksRsa = require('jwks-rsa')
+
+const jwksClient = jwksRsa({
+  cache: true,
+  jwksUri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys'
+});
+
+function verifyIdToken (rawIdToken) {
+  //
+  // https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-id-and-access-tokens#validating-tokens
+  //
+  function getKey(header, callback){
+    jwksClient.getSigningKey(header.kid, function(err, key) {
+      var signingKey = key.publicKey || key.rsaPublicKey;
+      callback(null, signingKey);
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    jwt.verify(rawIdToken, getKey, function(err, decoded) {
+      if (err) return reject(err)
+      resolve(decoded)
+    });
+  })
+}
 
 /**
  * Return an "auth token", which is the data type we use for API tokens
@@ -47,7 +72,10 @@ async function getTokenFromCode (authCode) {
 
   const accessToken = oauth2.accessToken.create(result)
   console.log('Token created: ', accessToken.token)
-  return makeAuthToken(accessToken)
+  return {
+    authToken: makeAuthToken(accessToken),
+    idToken: accessToken.token.id_token
+  }
 }
 
 async function refreshToken (authToken) {
@@ -56,50 +84,7 @@ async function refreshToken (authToken) {
   return makeAuthToken(accessToken)
 }
 
-async function getAccessToken (cookies, res) {
-  // Do we have an access token cached?
-  let token = cookies.graph_access_token
-
-  if (token) {
-    // We have a token, but is it expired?
-    // Expire 5 minutes early to account for clock differences
-    const FIVE_MINUTES = 300000
-    const expiration = new Date(parseFloat(cookies.graph_token_expires - FIVE_MINUTES))
-    if (expiration > new Date()) {
-      // Token is still good, just return it
-      return token
-    }
-  }
-
-  const refreshToken = cookies.graph_refresh_token
-  if (refreshToken) {
-    const newToken = await oauth2.accessToken.create({refresh_token: refreshToken}).refresh()
-    saveValuesToCookie(makeAuthToken(newToken), res)
-    return newToken.token.access_token
-  }
-
-  // Nothing in the cookies that helps, return empty
-  return null
-}
-
-function saveValuesToCookie (authToken, res) {
-  res.cookie('graph_access_token', authToken.accessToken, {maxAge: 3600000, httpOnly: true})
-  res.cookie('graph_user_name', authToken.user.name, {maxAge: 3600000, httpOnly: true})
-  res.cookie('graph_refresh_token', authToken.refreshToken, {maxAge: 7200000, httpOnly: true})
-  res.cookie('graph_token_expires', authToken.expires, {maxAge: 3600000, httpOnly: true})
-}
-
-function clearCookies (res) {
-  // Clear cookies
-  res.clearCookie('graph_access_token', {maxAge: 3600000, httpOnly: true})
-  res.clearCookie('graph_user_name', {maxAge: 3600000, httpOnly: true})
-  res.clearCookie('graph_refresh_token', {maxAge: 7200000, httpOnly: true})
-  res.clearCookie('graph_token_expires', {maxAge: 3600000, httpOnly: true})
-}
-
 exports.getAuthUrl = getAuthUrl
 exports.getTokenFromCode = getTokenFromCode
-exports.getAccessToken = getAccessToken
-exports.clearCookies = clearCookies
-exports.saveValuesToCookie = saveValuesToCookie
 exports.refreshToken = refreshToken
+exports.verifyIdToken = verifyIdToken

@@ -1,21 +1,26 @@
-// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+const db = require('../lib/db')
 var express = require('express')
 var router = express.Router()
 var authHelper = require('../helpers/auth')
+const jwt = require('jsonwebtoken')
 
-/* GET home page. */
 router.get('/', async function (req, res, next) {
   let parms = { title: 'Home', active: { home: true } }
 
-  const accessToken = await authHelper.getAccessToken(req.cookies, res)
-  const userName = req.cookies.graph_user_name
+  const rawIdToken = req.cookies.srt_id_token
 
-  if (accessToken && userName) {
-    parms.user = userName
-    parms.debug = `User: ${userName}\nAccess Token: ${accessToken}`
-  } else {
+  try {
+    const idToken = await authHelper.verifyIdToken(rawIdToken)
+    const id = idToken.name
+    const authToken = db.getToken(id)
+
+    parms.user = id
+    parms.debug = `User: ${ id }\nAuth Token: ${ JSON.stringify(authToken) }`
+  } catch (err) {
+    console.log(err)
     parms.signInUrl = authHelper.getAuthUrl()
     parms.debug = parms.signInUrl
+
   }
 
   res.render('index', parms)
