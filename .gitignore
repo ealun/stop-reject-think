@@ -1,3 +1,6 @@
+# Fake DB
+db.json
+
 # Logs
 logs
 *.log
