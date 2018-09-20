@@ -1,7 +1,7 @@
 const db = require('../lib/db')
 var express = require('express')
 var router = express.Router()
-var authHelper = require('../helpers/auth')
+var authHelper = require('../lib/auth')
 
 router.get('/', async function (req, res, next) {
   let parms = { title: 'Home', active: { home: true } }
