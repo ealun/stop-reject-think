@@ -8,6 +8,9 @@ const job = require('./lib/job')
 
 var index = require('./routes/index')
 var authorize = require('./routes/authorize')
+const login = require('./routes/login')
+const Authenticator = require('./lib/authenticator')
+const { authenticate } = require('./routes/middleware')
 
 var app = express()
 
@@ -20,12 +23,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', index)
-app.use('/authorize', authorize)
-
 app.use('/healthcheck', async (req, res, next) => {
   res.json({ status: 'ok' })
 })
+
+app.use('/login', login)
+app.use('/authorize', authorize)
+
+app.use(authenticate(new Authenticator({ jwksUri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys' })))
+
+app.use('/', index)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
