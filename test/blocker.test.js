@@ -1,25 +1,35 @@
 /* eslint-env mocha */
-const { expect } = require('chai')
+const chai = require('chai')
+chai.use(require('chai-moment'))
+const expect = chai.expect
 
-const calendarResponse = require('./mocks/calendar-response.json')
-const { getMeetingsByDate } = require('../lib/blocker')
+const moment = require('moment')
+const sinon = require('sinon')
 
-describe('blocker', () => {
-  describe('.getMeetingsByDate', () => {
-    it('bins meetings by date', () => {
-      const expected = {
-        '2017-11-16': [{
-          'startDate': new Date('2017-11-16T08:00:00.000'),
-          'span': 0.5,
-          'endDate': new Date('2017-11-16T08:30:00.000')
-        }],
-        '2017-11-17': [{
-          'startDate': new Date('2017-11-17T10:00:00.000'),
-          'span': 1.5,
-          'endDate': new Date('2017-11-17T11:30:00.000')
-        }]
+const Blocker = require('../lib/blocker')
+
+describe('lib.blocker', () => {
+  describe('.block', () => {
+    it('blocks all open slots', async () => {
+      const start = moment('2017-11-16T00:00:00.000')
+      const end = moment('2017-11-17T00:00:00.000')
+      const meetingEnd = moment(start).add('1', 'hour')
+      const events = [
+        {
+          start: start,
+          end: meetingEnd
+        }
+      ]
+
+      const client = {
+        writeEvent: sinon.spy(async event => {
+          expect(event.start).to.be.sameMoment(meetingEnd)
+        })
       }
-      expect(getMeetingsByDate(calendarResponse)).to.deep.equal(expected)
+      const blocker = new Blocker({ client })
+
+      await blocker.block({ start, end, events })
+      expect(client.writeEvent.called).to.equal(true)
     })
   })
 })
