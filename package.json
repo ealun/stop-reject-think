@@ -6,12 +6,16 @@
   "scripts": {
     "coverage": "nyc mocha",
     "lint": "standard --fix",
-    "start": "nodemon ./bin/www --ignore db.json",
+    "start": "./bin/www",
+    "nodemon": "nodemon ./bin/www --ignore db.json",
     "test": "npm run lint && mocha --recursive"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ealun/stop-reject-think.git"
+  },
+  "engines": {
+    "node": ">=8.9.4"
   },
   "keywords": [],
   "author": "",
