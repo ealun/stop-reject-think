@@ -6,7 +6,7 @@ router.get('/', async function (req, res, next) {
   let parms = { title: 'Home', active: { home: true } }
 
   const id = req.user
-  const authToken = db.getToken(id)
+  const authToken = await db.getToken(id)
 
   parms.user = id
   parms.debug = `User: ${id}\nAuth Token: ${JSON.stringify(authToken)}`
