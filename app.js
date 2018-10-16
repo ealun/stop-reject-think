@@ -29,13 +29,14 @@ app.use('/healthcheck', async (req, res, next) => {
   res.json({ status: 'ok' })
 })
 
+app.use('/cron', cron)
+
 app.use('/login', login)
 app.use('/authorize', authorize)
 
 app.use(authenticate(new Authenticator({ jwksUri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys' })))
 
 app.use('/', index)
-app.use('/cron', cron)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
