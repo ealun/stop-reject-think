@@ -30,8 +30,17 @@ Set environment variables to configure the service.
 
 #### `DB`
 
+Database backend to use.
+
 * `file` - use a local db.json file as the "database"
 * `datastore` - use Google Cloud Datastore
+
+#### `RUNNER`
+
+Job runner to use.
+
+* `timeout` - local, `setTimeout` based job runner
+* `cron` - Google App Engine Cron Service runner
 
 #### `READONLY`
 
@@ -43,14 +52,22 @@ Visit <http://localhost:8080>.
 
 ## Deploying
 
-### Build and push image
+### Google App Engine
+
+```
+gcloud app deploy
+```
+
+### Kubernetes
+
+#### Build and push image
 
 ```
 docker build -t gcr.io/stop-reject-think/stop-reject-think:latest .
 docker push gcr.io/stop-reject-think/stop-reject-think:latest
 ```
 
-### Deploy to Kubernetes
+#### Deploy
 
 ```
 kubectl apply -f kubernetes.yaml

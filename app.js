@@ -9,6 +9,8 @@ const job = require('./lib/job')
 var index = require('./routes/index')
 var authorize = require('./routes/authorize')
 const login = require('./routes/login')
+const cron = require('./routes/cron')
+
 const Authenticator = require('./lib/authenticator')
 const { authenticate } = require('./routes/middleware')
 
@@ -33,6 +35,7 @@ app.use('/authorize', authorize)
 app.use(authenticate(new Authenticator({ jwksUri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys' })))
 
 app.use('/', index)
+app.use('/cron', cron)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
