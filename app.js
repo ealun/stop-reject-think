@@ -9,6 +9,8 @@ const job = require('./lib/job')
 var index = require('./routes/index')
 var authorize = require('./routes/authorize')
 const login = require('./routes/login')
+const cron = require('./routes/cron')
+
 const Authenticator = require('./lib/authenticator')
 const { authenticate } = require('./routes/middleware')
 
@@ -26,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/healthcheck', async (req, res, next) => {
   res.json({ status: 'ok' })
 })
+
+app.use('/cron', cron)
 
 app.use('/login', login)
 app.use('/authorize', authorize)
