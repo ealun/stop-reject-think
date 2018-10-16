@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { protect } = require('./protect')
+const { protect } = require('../lib/protect')
 
 router.get('/protect', async (req, res, next) => {
   await protect()
