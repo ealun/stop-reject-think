@@ -24,6 +24,19 @@ npm i
 npm start
 ```
 
+### Configuring
+
+Set environment variables to configure the service.
+
+#### `DB`
+
+* `file` - use a local db.json file as the "database"
+* `datastore` - use Google Cloud Datastore
+
+#### `READONLY`
+
+Set to anything to disable creating new calendar events.
+
 ### Using
 
 Visit <http://localhost:8080>.

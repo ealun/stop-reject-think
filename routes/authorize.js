@@ -10,7 +10,7 @@ router.get('/', async function (req, res, next) {
       const { authToken, idToken } = await authHelper.getTokenFromCode(code)
 
       res.cookie('srt_id_token', idToken, { maxAge: 7200000, httpOnly: true })
-      db.setToken(authToken.user.name, authToken)
+      await db.setToken(authToken.user.name, authToken)
     } catch (error) {
       res.render('error', { title: 'Error', message: 'Error exchanging code for token', error: error })
     }
