@@ -1,0 +1,4 @@
+cron:
+- description: "Scan users and protect their calendars"
+  url: /cron/protect
+  schedule: every 5 minutes
